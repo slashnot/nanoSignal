@@ -1,15 +1,39 @@
+/**
+ * @fileoverview Utilities for flattening and unflattening nested objects
+ * @author nanoSignal Team
+ * @version 1.0.0
+ */
+
 /* ---------------------------------------------------------------------
 OBJECT FLATTEN AND UNFLATTEN UTILS
 // --------------------------------------------------------------------- */
 
-// Define common types used across functions
+/**
+ * Type for flattened object with string keys and any values
+ */
 type FlattenedObject = Record<string, any>;
+
+/**
+ * Type for nested object with string keys and any values
+ */
 type NestedObject = Record<string, any>;
-// Removed unused type: type Primitive = string | number | boolean | null | undefined;
+
+/**
+ * Type for marking serialized functions in flattened objects
+ */
 type FunctionMarker = { __function__: string };
 
 /**
  * Flattens a nested object with array support, preserving only non-object values
+ * 
+ * @param {NestedObject} obj - The nested object to flatten
+ * @param {string} parentKey - Key prefix for nested properties (used in recursion)
+ * @param {string} separator - Character to separate nested keys (default '.')
+ * @returns {FlattenedObject} A flattened object with dot-notation keys
+ * 
+ * @example
+ * flattenObjectWithArray({ user: { name: 'John', scores: [10, 20] } });
+ * // Returns: { 'user.name': 'John', 'user.scores[0]': 10, 'user.scores[1]': 20 }
  */
 export const flattenObjectWithArray = (
   obj: NestedObject,
@@ -38,6 +62,18 @@ export const flattenObjectWithArray = (
 
 /**
  * Reconstructs a nested object from a flattened object with array support
+ * 
+ * @param {FlattenedObject} flattened - The flattened object to unflatten
+ * @param {string} separator - Character that separates nested keys (default '.')
+ * @returns {NestedObject} A reconstructed nested object
+ * 
+ * @example
+ * unflattenObjectWithArray({
+ *   'user.name': 'John',
+ *   'user.scores[0]': 10,
+ *   'user.scores[1]': 20
+ * });
+ * // Returns: { user: { name: 'John', scores: [10, 20] } }
  */
 export const unflattenObjectWithArray = (
   flattened: FlattenedObject, 
@@ -74,6 +110,23 @@ export const unflattenObjectWithArray = (
 
 /**
  * Flattens a nested object with function serialization support
+ * 
+ * @param {NestedObject} obj - The nested object to flatten
+ * @param {string} parentKey - Key prefix for nested properties (used in recursion)
+ * @param {string} separator - Character to separate nested keys (default '.')
+ * @returns {FlattenedObject} A flattened object with serialized functions
+ * 
+ * @example
+ * flattenObjectWithFn({
+ *   user: {
+ *     name: 'John',
+ *     greet: function() { return `Hello ${this.name}`; }
+ *   }
+ * });
+ * // Returns: {
+ * //   'user.name': 'John',
+ * //   'user.greet': { __function__: 'function() { return `Hello ${this.name}`; }' }
+ * // }
  */
 export const flattenObjectWithFn = (
   obj: NestedObject, 
@@ -106,6 +159,22 @@ export const flattenObjectWithFn = (
 
 /**
  * Reconstructs a nested object from a flattened object with function reconstruction
+ * 
+ * @param {FlattenedObject} flattened - The flattened object to unflatten
+ * @param {string} separator - Character that separates nested keys (default '.')
+ * @returns {NestedObject} A reconstructed nested object with functions
+ * 
+ * @example
+ * unflattenObjectWithFn({
+ *   'user.name': 'John',
+ *   'user.greet': { __function__: 'function() { return `Hello ${this.name}`; }' }
+ * });
+ * // Returns: {
+ * //   user: {
+ * //     name: 'John',
+ * //     greet: function() { return `Hello ${this.name}`; }
+ * //   }
+ * // }
  */
 export const unflattenObjectWithFn = (
   flattened: FlattenedObject, 
@@ -150,6 +219,26 @@ export const unflattenObjectWithFn = (
 
 /**
  * Comprehensive flatten function that supports both arrays and functions
+ * 
+ * @param {NestedObject} obj - The nested object to flatten
+ * @param {string} parentKey - Key prefix for nested properties (used in recursion)
+ * @param {string} separator - Character to separate nested keys (default '.')
+ * @returns {FlattenedObject} A flattened object with array indices and serialized functions
+ * 
+ * @example
+ * flattenObject({
+ *   user: {
+ *     name: 'John',
+ *     scores: [10, 20],
+ *     calculate: function() { return this.scores.reduce((a, b) => a + b, 0); }
+ *   }
+ * });
+ * // Returns: {
+ * //   'user.name': 'John',
+ * //   'user.scores[0]': 10,
+ * //   'user.scores[1]': 20,
+ * //   'user.calculate': { __function__: 'function() { return this.scores.reduce((a, b) => a + b, 0); }' }
+ * // }
  */
 export const flattenObject = (
   obj: NestedObject, 
@@ -194,6 +283,25 @@ export const flattenObject = (
 
 /**
  * Comprehensive unflatten function that supports both arrays and functions
+ * 
+ * @param {FlattenedObject} flattened - The flattened object to unflatten
+ * @param {string} separator - Character that separates nested keys (default '.')
+ * @returns {NestedObject} A reconstructed nested object with arrays and functions
+ * 
+ * @example
+ * unflattenObject({
+ *   'user.name': 'John',
+ *   'user.scores[0]': 10,
+ *   'user.scores[1]': 20,
+ *   'user.calculate': { __function__: 'function() { return this.scores.reduce((a, b) => a + b, 0); }' }
+ * });
+ * // Returns: {
+ * //   user: {
+ * //     name: 'John',
+ * //     scores: [10, 20],
+ * //     calculate: function() { return this.scores.reduce((a, b) => a + b, 0); }
+ * //   }
+ * // }
  */
 export const unflattenObject = (
   flattened: FlattenedObject, 
