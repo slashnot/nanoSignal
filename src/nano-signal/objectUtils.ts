@@ -5,7 +5,7 @@ OBJECT FLATTEN AND UNFLATTEN UTILS
 // Define common types used across functions
 type FlattenedObject = Record<string, any>;
 type NestedObject = Record<string, any>;
-type Primitive = string | number | boolean | null | undefined;
+// Removed unused type: type Primitive = string | number | boolean | null | undefined;
 type FunctionMarker = { __function__: string };
 
 /**

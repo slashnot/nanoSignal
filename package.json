@@ -1,15 +1,41 @@
 {
-  "name": "nanosignal",
-  "private": true,
-  "version": "0.0.2",
+  "name": "nanosignal-ts",
+  "version": "1.0.0",
+  "description": "A minimal reactive signal implementation for TypeScript",
   "type": "module",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:js": "vite build",
+    "build": "pnpm run build:types && pnpm run build:js",
+    "preview": "vite preview",
+    "prepare": "pnpm run build",
+    "prepublishOnly": "pnpm run build"
   },
+  "keywords": [
+    "signals",
+    "reactive",
+    "state",
+    "typescript"
+  ],
+  "author": "",
+  "license": "ISC",
   "devDependencies": {
+    "typescript": "~5.8.3",
     "vite": "^6.3.5"
   }
 }

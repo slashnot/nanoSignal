@@ -57,7 +57,7 @@ const set = <T>(
   }
 
   if (typeof fnOrObj === "function") {
-    const newValue = unflattenObject(signal.value);
+    const newValue = unflattenObject(signal.value as any);
     const returnValue = (fnOrObj as Function)(newValue);
 
     if (returnValue) return _setSignalObject(signal as SignalBase<any>, returnValue);
@@ -109,7 +109,7 @@ export const nanoSignal = <T>(initVal: T): NanoSignal<T> => {
     get value(): T {
       _detectChange(_signal);
       if (typeof _signal.value === "object" && _signal.value !== null)
-        return unflattenObject(_signal.value) as T;
+        return unflattenObject(_signal.value as any) as T;
       return _signal.value;
     },
 
