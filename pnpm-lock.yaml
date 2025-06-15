@@ -4,9 +4,16 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  nanosignal: link:C:/Users/slash/AppData/Local/pnpm/global/5/node_modules/nanosignal
+
 importers:
 
   .:
+    dependencies:
+      nanosignal:
+        specifier: link:C:/Users/slash/AppData/Local/pnpm/global/5/node_modules/nanosignal
+        version: link:C:/Users/slash/AppData/Local/pnpm/global/5/node_modules/nanosignal
     devDependencies:
       vite:
         specifier: ^6.3.5
