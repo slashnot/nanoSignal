@@ -6,7 +6,6 @@ import { flattenObject, unflattenObject } from "./objectUtils"
 // ----------------------------------------------------
 const changes = { signalInstance: null }
 const effectsMap = new Map()
-const computedMap = new Map()
 
 export const effect = (fn) => {
     fn()
@@ -29,17 +28,11 @@ const _detectChange = (signal) => {
 // ---- x ------------------------
 
 const _runEffects = (signal) => {
-    for (let effect of effectsMap.get(signal)) {
-        effect()
+    if(effectsMap.size){
+        for (let effectFn of effectsMap.get(signal)) {
+            effectFn()
+        }
     }
-}
-// ---- x ------------------------
-
-const _runComputedEffects = (signal) => {
-    // for (let effect of computedMap.get(signal)) {
-    //     signal.value = effect()
-    console.log("run computed effects", computedMap.get(signal))
-    // }
 }
 // ---- x ------------------------
 
@@ -91,6 +84,7 @@ export const nanoSignal = (initVal) => {
         valueOf: function () {
             return _signal.value;
         },
+
         get value() {
             _detectChange(_signal)
             if (typeof _signal.value === "object") return unflattenObject(_signal.value)
@@ -100,7 +94,6 @@ export const nanoSignal = (initVal) => {
         set value(val) {
             _setSignalValue(_signal, val)
             _runEffects(_signal)
-            _runComputedEffects(_signal)
         },
         set: (fnOrObj) => {
             return set(_signal, fnOrObj)
@@ -108,22 +101,4 @@ export const nanoSignal = (initVal) => {
     }
 }
 
-export const computed = (fn) => {
-    const _computedSignal = nanoSignal(fn())
-
-    // Set computed effects
-    if (changes?._signal) {
-        if (computedMap.has(changes._signal)) {
-            computedMap.get(changes._signal).push(fn)
-        }
-        else {
-            computedMap.set(changes._signal, [fn])
-        }
-        changes._signal = null
-    }
-
-    return _computedSignal
-}
-
 window.effectsMap = effectsMap
-window.computedMap = computedMap
