@@ -21,45 +21,46 @@ const _runEffects = (signal) => {
 }
 // ---- x ------------------------
 
-const _setSignalValue = (signal, value) => {
-    if (typeof value === "object") {
-        signal.value = flattenObject(value)
+const _setSignalValue = (signal, val) => {
+    if (typeof val === "object") {
+        signal.value = flattenObject(val)
     } else {
-        signal.value = value
+        signal.value = val
     }
+
     return signal.value
 }
 // ---- x ------------------------
 
-const _updateSignalValue = (signal, obj) => {
-    const newValue = typeof obj === 'object'
-        ? { ...signal.value, ...flattenObject(obj) }
-        : obj
+const _updateSignalValue = (signal, argRef) => {
+    const newValue = typeof argRef === 'object'
+        ? { ...signal.value, ...flattenObject(argRef) }
+        : argRef
 
     return _setSignalValue(signal, newValue)
 }
 // ---- x ------------------------
 
 const set = (signal, fnOrObj) => {
+    // If the value is a function, treat it as a callback
     if (typeof fnOrObj === "function") {
-        const newValue = unflattenObject(signal.value)
-        const returnValue = fnOrObj(newValue)
+        const argRef = typeof signal.value === 'object'
+            ? unflattenObject(signal.value) //Build actual object
+            : signal.value
+        const returnValue = fnOrObj(argRef)
 
         if (returnValue) {
-            // Primitive value or object set
-            return _updateSignalValue(signal, returnValue)
+            // Object or primitive
+            _setSignalValue(signal, returnValue)
         }
 
         // Undefined - Immer style direct draft edit
-        return _setSignalValue(signal, {
-            ...signal.value,
-            ...flattenObject(newValue)
-        })
+        return _updateSignalValue(signal, argRef)
     }
+
     // Primitive value or object set
     return _setSignalValue(signal, fnOrObj)
 }
-
 
 // ----------------------------------------------
 // nanoSignal Function

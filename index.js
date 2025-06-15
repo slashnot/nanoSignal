@@ -1,1 +1,1 @@
-export * from "./src/nano-signal/nanoSignal.prod"
+export * from "./src/nano-signal/nanoSignal"
