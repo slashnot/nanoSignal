@@ -207,3 +207,6 @@ export const unflattenObject = (flattened, separator = '.') => {
   return result;
 }
 // ---- x ---------------------------------------------------------------
+
+window.flattenObject = flattenObject;
+window.unflattenObject = unflattenObject;
