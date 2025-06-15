@@ -1,1 +1,1 @@
-export { nanoSignal } from "./src/nanoSignal"
+export { nanoSignal, effect, computed } from "./src/nano-signal/nanoSignal.prod"

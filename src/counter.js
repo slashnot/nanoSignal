@@ -1,4 +1,4 @@
-import { nanoSignal, effect, computed } from "./nano-signal/nanoSignal"
+import { nanoSignal, effect, computed } from "./nano-signal/nanoSignal.prod"
 
 export function setupCounter(element) {
   const counter = nanoSignal(0)
@@ -15,4 +15,3 @@ export function setupCounter(element) {
     element.innerHTML = `count is ${counter.value} * 2 = ${double.value}`
   })
 }
-
