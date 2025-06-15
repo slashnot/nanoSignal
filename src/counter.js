@@ -1,7 +1,8 @@
-import { nanoSignal, effect } from "./nano-signal/nanoSignal"
+import { nanoSignal, effect, computed } from "./nano-signal/nanoSignal"
 
 export function setupCounter(element) {
   const counter = nanoSignal(0)
+  const double = computed(() => counter.value * 2)
 
   const setCounter = (count) => {
     counter.value = count
@@ -11,7 +12,7 @@ export function setupCounter(element) {
   
   effect(() => {
     console.log("Updating Counter value...", counter.value)
-    element.innerHTML = `count is ${counter.value}`
+    element.innerHTML = `count is ${counter.value} * 2 = ${double.value}`
   })
 }
 

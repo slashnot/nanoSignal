@@ -7,28 +7,13 @@ import { flattenObject, unflattenObject } from "./objectUtils"
 const changes = { signalInstance: null }
 const effectsMap = new Map()
 
-export const effect = (fn) => {
-    fn()
-    // Set Effects
-    if (changes?._signal) {
-        if (effectsMap.has(changes._signal)) {
-            effectsMap.get(changes._signal).push(fn)
-        }
-        else {
-            effectsMap.set(changes._signal, [fn])
-        }
-        changes._signal = null
-    }
-}
-// ---- x ------------------------
-
 const _detectChange = (signal) => {
     changes._signal = signal
 }
 // ---- x ------------------------
 
 const _runEffects = (signal) => {
-    if(effectsMap.size){
+    if (effectsMap.has(signal)) {
         for (let effectFn of effectsMap.get(signal)) {
             effectFn()
         }
@@ -101,4 +86,40 @@ export const nanoSignal = (initVal) => {
     }
 }
 
+// ----------------------------------------------
+// effect Function
+// ----------------------------------------------
+export const effect = (fn) => {
+    fn()
+    // Set Effects
+    if (changes?._signal) {
+        if (effectsMap.has(changes._signal)) {
+            effectsMap.get(changes._signal).push(fn)
+        }
+        else {
+            effectsMap.set(changes._signal, [fn])
+        }
+        changes._signal = null
+    }
+}
+
+// ----------------------------------------------
+// computed Function
+// ----------------------------------------------
+export const computed = (fn) => {
+    const computedResult = fn()
+
+    if (computedResult !== undefined) {
+        const _computedSignal = nanoSignal(computedResult)
+        effect(() => {
+            _computedSignal.value = fn()
+        })
+        return _computedSignal
+    }
+    return false
+}
+
 window.effectsMap = effectsMap
+window.nanoSignal = nanoSignal
+window.effect = effect
+window.computed = computed
