@@ -107,10 +107,8 @@ export const effect = (fn) => {
 // computed Function
 // ----------------------------------------------
 export const computed = (fn) => {
-    const computedResult = fn()
-
-    if (computedResult !== undefined) {
-        const _computedSignal = nanoSignal(computedResult)
+    if (typeof fn === "function") {
+        const _computedSignal = nanoSignal(fn())
         effect(() => {
             _computedSignal.value = fn()
         })
@@ -118,6 +116,7 @@ export const computed = (fn) => {
     }
     return false
 }
+// ---- x ------------------------
 
 window.effectsMap = effectsMap
 window.nanoSignal = nanoSignal
