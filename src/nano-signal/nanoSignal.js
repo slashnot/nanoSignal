@@ -42,7 +42,9 @@ const _updateSignalValue = (signal, obj) => {
 
 const set = (signal, fnOrObj) => {
     if (typeof fnOrObj === "function") {
-        const newValue = unflattenObject(signal.value)
+        const newValue = typeof signal.value === 'object'
+            ? unflattenObject(signal.value)
+            : signal.value
         const returnValue = fnOrObj(newValue)
 
         if (returnValue) {
